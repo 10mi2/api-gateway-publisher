@@ -1,0 +1,95 @@
+Description: API Documentation Site
+
+Parameters:
+  DomainHostedZone:
+    Type: String
+  Domain:
+    Type: String
+
+# Basic idea is to write an upload lambda trigger that runs the merger code for swagger
+Resources:
+  ## Specifying the bucket to upload assets for this location
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "docs.${Domain}"
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - s3:GetObject
+            Resource: !Sub '${SiteBucket.Arn}/*'
+  GalleryOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "Allows Access from the CloudFormation CDN to the Bucket"
+  
+  # Certificate Creation
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub "docs.${Domain}"
+      SubjectAlternativeNames:
+        - !Sub "www.docs.${Domain}"
+      DomainValidationOptions:
+        - DomainName: !Sub "docs.${Domain}"
+          ValidationDomain: !Ref Domain
+  Cloudfront:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+    - SiteBucket
+    Properties:
+      DistributionConfig:
+        Origins:
+        - DomainName: !Sub "docs.${Domain}.s3.amazonaws.com"
+          Id: "Documentation-Website"
+          S3OriginConfig:
+            OriginAccessIdentity: !Join ['/', [ "origin-access-identity/cloudfront", !Ref GalleryOriginAccessIdentity ]]
+        Enabled: true
+        Aliases:
+        - !Sub "docs.${Domain}"
+        - !Sub "www.docs.${Domain}"
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          TargetOriginId: "Documentation-Website"
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        ViewerCertificate:
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+  HostedZone:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref DomainHostedZone
+      RecordSets:
+      - Name: !Sub "docs.${Domain}"
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: !GetAtt "Cloudfront.DomainName"
+      - Name: !Sub "www.docs.${Domain}"
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: !GetAtt "Cloudfront.DomainName"
