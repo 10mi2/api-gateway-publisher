@@ -1,0 +1,11 @@
+[
+  {
+    "id": "<API Gateway ID>",
+    "stageName": "<Stage you want published>",
+    "name": "<Name you want to show up in the dropdown>"
+  },
+  {
+    "url": "https://petstore.swagger.io/v2/swagger.json",
+    "name": "Pets"
+  }
+]

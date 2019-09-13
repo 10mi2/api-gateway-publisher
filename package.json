@@ -1,0 +1,29 @@
+{
+  "name": "@tenmilesquare/api-gateway-publisher",
+  "version": "0.0.1",
+  "description": "Swagger UI builder to publicsh surface multiple microservice docs",
+  "private": true,
+  "main": "index.html",
+  "scripts": {
+    "start": "npm run build; http-server dist/",
+    "build": "sh ./scripts/build.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "UI",
+    "Swagger",
+    "OpenApi",
+    "API Gateway",
+    "AWS"
+  ],
+  "author": "Ten Mile Square Technologies",
+  "license": "GNU",
+  "devDependencies": {
+    "file-loader": "^4.2.0",
+    "http-server": "^0.11.1",
+    "swagger-ui-dist": "^3.23.9",
+    "webpack": "^4.40.0",
+    "webpack-cli": "^3.3.8"
+  },
+  "dependencies": {}
+}
