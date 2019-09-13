@@ -15,7 +15,7 @@ You will need to add the following to the `config.json`:
 ## To Run
 
 ### Pre Requisites
-- Need to have aws cli configured to access you AWS environment - (link)[https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html]
+- Need to have aws cli configured to access you AWS environment - [link](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
 ### Commands to run
 - Add your api gateway IDs and short names to the config file.
@@ -23,6 +23,6 @@ You will need to add the following to the `config.json`:
 - `npm run deploy`
 
 ## Other projects that helped to make this possible
-- (Swagger UI in one page)[https://github.com/sunnyagarwal008/setup-swagger-ui-in-one-page/blob/master/swagger-ui.html]
-- (Open API / Swagger)[https://github.com/swagger-api/swagger-ui]
-- (How to publish your own swagger to a microservice)[still need to get the link]
+- [Swagger UI in one page](https://github.com/sunnyagarwal008/setup-swagger-ui-in-one-page/blob/master/swagger-ui.html)
+- [Open API / Swagger](https://github.com/swagger-api/swagger-ui)
+- [How to publish your own swagger to a microservice](still need to get the link)
