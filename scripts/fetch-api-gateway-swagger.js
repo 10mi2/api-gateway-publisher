@@ -23,8 +23,8 @@ config.forEach(row => {
   let urlLocation
 
   if (row.url === undefined) {
-    urlLocation = `services/${row.name}.json`
-    const cmd = `aws apigateway get-export --parameters extensions='integrations' --rest-api-id ${row.id} --stage-name ${row.stageName} --export-type swagger ${distDir}/${urlLocation}`
+    urlLocation = `services/${row.name}.yaml`
+    const cmd = `aws apigateway get-export --parameters extensions='integrations' --rest-api-id ${row.id} --stage-name ${row.stageName} --accepts application/yaml --export-type oas30 ${distDir}/${urlLocation}`
     execSync(cmd)
   } else {
     urlLocation = row.url
