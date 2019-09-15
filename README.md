@@ -26,3 +26,4 @@ You will need to add the following to the `config.json`:
 - [Swagger UI in one page](https://github.com/sunnyagarwal008/setup-swagger-ui-in-one-page/blob/master/swagger-ui.html)
 - [Open API / Swagger](https://github.com/swagger-api/swagger-ui)
 - [How to publish your own swagger to a microservice](still need to get the link)
+- [A Link on how to publish the Swagger doc to your microservice](https://medium.com/@nabtechblog/integrating-swagger-with-aws-lambda-and-api-gateway-using-cloud-formation-macro-functions-7432dec50dd)
