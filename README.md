@@ -12,6 +12,8 @@ You will need to add the following to the `config.json`:
 
 ## Notes for later
 - Add a cron like experience.  Assume docs are published to the most recent from the api side, and re upload every night depending on user config
+- Add to the API Example a way to poll the current version and make that what gets published so we have a code to service to documentation connection
+- Some pipeline event to trigger the next build.
 
 
 ## To Run

@@ -2,6 +2,10 @@ Description: "Microservice API and Auth settings"
 Transform: "AWS::Serverless-2016-10-31"
 
 Parameters:
+  PlumbingBucket:
+    Type: String
+    Default:
+      plumbing
   Version:
     Type: String
     Default: v1
@@ -15,6 +19,16 @@ Resources:
     Properties:
       Name: ServiceApi
       StageName: !Ref Version
+      DefinitionBody:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
+            Location:
+              Fn::Join:
+                - ''
+                - - 's3://'
+                  - !Ref PlumbingBucket
+                  - !Sub "/${AWS::StackName}-openapi.yaml"
       # This is only needed if you are Requesting from a domain that is not shared with this API Domain
       # Know the security implications before doing this on a production site
       # This can be left off because we do it with Swagger instead
