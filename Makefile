@@ -15,6 +15,6 @@ deploy: build
 	# Deploy the cloudformation stack
 	aws cloudformation deploy \
 		--no-fail-on-empty-changeset \
-		--template-file template.yaml \
+		--template-file cloudformation.yaml \
 		--stack-name api-gateway-publisher \
 		--parameter-overrides "Domain=$(DOMAIN)"

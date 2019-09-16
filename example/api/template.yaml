@@ -1,0 +1,39 @@
+Description: "Microservice API and Auth settings"
+Transform: "AWS::Serverless-2016-10-31"
+
+Parameters:
+  Version:
+    Type: String
+    Default: v1
+
+
+Resources:
+  # You don't actually need the API, but it does allow you to centralize your auth config, and allows you to add an Open API Spec
+  ServiceApi:
+    DependsOn: UserPool
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ServiceApi
+      StageName: !Ref Version
+      # This is only needed if you are Requesting from a domain that is not shared with this API Domain
+      # Know the security implications before doing this on a production site
+      # This can be left off because we do it with Swagger instead
+      # Cors:
+      #   AllowMethods: "'*'"
+      #   AllowHeaders: "'*'"
+      #   AllowOrigin: "'*'"
+
+
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Handles the basic request with no need for authentication
+      Runtime: go1.x
+      Handler: ./dist/main
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /
+            RestApiId: !Ref ServiceApi
+            Method: GET
