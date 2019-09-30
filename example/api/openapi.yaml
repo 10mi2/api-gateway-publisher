@@ -20,7 +20,7 @@ paths:
       operationId: getTest
       responses:
         '200':
-          description: The 
+          description: The basic return value
           content:
             application/json:
               schema:
@@ -28,16 +28,14 @@ paths:
         '500':
           description: Internal Server error
       x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: 200
         uri:
-          Fn::Join:
-            - ''
-            - - 'arn:aws:apigateway:'
-              - Ref: AWS::Region
-              - ':lambda:path/2015-03-31/functions/'
-              - Fn::GetAtt: "LambdaFunction.Arn"
-              - '/invocations'
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations"
+
         passthroughBehavior: when_no_match
-        httpMethod: GET
+        httpMethod: POST
         type: aws_proxy
     options:
       tags:
@@ -71,3 +69,13 @@ paths:
             }
         passthroughBehavior: when_no_match
         type: mock
+components:
+  schemas:
+    TestObject:
+      type: object
+      properties:
+        message:
+          type: string
+        structure:
+          type: string
+          
