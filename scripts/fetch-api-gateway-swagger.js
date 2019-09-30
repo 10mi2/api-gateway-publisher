@@ -23,9 +23,19 @@ config.forEach(row => {
   let urlLocation
 
   if (row.url === undefined) {
+    // Define where you want to save the openAPI Spec to
     urlLocation = `services/${row.name}.yaml`
-    const cmd = `aws apigateway get-export --parameters extensions='integrations' --rest-api-id ${row.id} --stage-name ${row.stageName} --accepts application/yaml --export-type oas30 ${distDir}/${urlLocation}`
+
+    let apiGatewayID = row.id
+    if (row.id === undefined) {
+      
+      // Get the gatewayID by the name of the stack
+      const getIdCmd = `aws cloudformation describe-stacks --stack-name ${row.stackName} --query "Stacks[0].Outputs[?OutputKey == 'ServiceApiId'].OutputValue" --output text`
+      apiGatewayID = execSync(getIdCmd).toString().replace(/[\n]/g, '')
+    }
+    const cmd = `aws apigateway get-export --parameters extensions='integrations' --rest-api-id ${apiGatewayID} --stage-name ${row.stageName} --accepts application/yaml --export-type oas30 ${distDir}/${urlLocation}`
     execSync(cmd)
+    
   } else {
     urlLocation = row.url
   }
