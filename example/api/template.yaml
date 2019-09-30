@@ -2,33 +2,26 @@ Description: "Microservice API and Auth settings"
 Transform: "AWS::Serverless-2016-10-31"
 
 Parameters:
-  PlumbingBucket:
-    Type: String
-    Default:
-      plumbing
-  Version:
+  StageName:
     Type: String
     Default: v1
-
+  PlumbingBucket:
+    Type: String
+    Default: openapi-plumbing
 
 Resources:
   # You don't actually need the API, but it does allow you to centralize your auth config, and allows you to add an Open API Spec
   ServiceApi:
-    DependsOn: UserPool
     Type: AWS::Serverless::Api
     Properties:
       Name: ServiceApi
-      StageName: !Ref Version
+      StageName: !Ref StageName
       DefinitionBody:
         Fn::Transform:
           Name: 'AWS::Include'
           Parameters:
             Location:
-              Fn::Join:
-                - ''
-                - - 's3://'
-                  - !Ref PlumbingBucket
-                  - !Sub "/${AWS::StackName}-openapi.yaml"
+              Fn::Sub: "s3://${PlumbingBucket}/${AWS::StackName}-openapi.yaml"
       # This is only needed if you are Requesting from a domain that is not shared with this API Domain
       # Know the security implications before doing this on a production site
       # This can be left off because we do it with Swagger instead
@@ -51,3 +44,10 @@ Resources:
             Path: /
             RestApiId: !Ref ServiceApi
             Method: GET
+Outputs:
+  GatewayEndpoint:
+    Description: "API Prod stage endpoint"
+    Value: !Sub "https://${ServiceApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
+  ServiceApiId:
+    Description: The API ID for use in publishing the api docs (This needs to be here in order for this to work)
+    Value: !Ref ServiceApi
