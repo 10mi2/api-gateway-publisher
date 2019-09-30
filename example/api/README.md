@@ -8,3 +8,4 @@ This example builds a very simple api and has a construct template using AWS SAM
 
 ## Helpful links and extra reading
 - [A Link on how to publish the Swagger doc to your microservice](https://medium.com/@nabtechblog/integrating-swagger-with-aws-lambda-and-api-gateway-using-cloud-formation-macro-functions-7432dec50dd)
+- [AWS Example of a swagger document](https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/api_swagger_cors/swagger.yaml)
