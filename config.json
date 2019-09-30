@@ -3,5 +3,9 @@
     "stackName": "openapi-gateway-example",
     "stageName": "v1",
     "name": "TestApi"
+  },
+  {
+    "url": "https://petstore.swagger.io/v2/swagger.json",
+    "name": "Pets"
   }
 ]
