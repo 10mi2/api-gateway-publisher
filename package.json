@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Swagger UI builder to publicsh surface multiple microservice docs",
   "private": true,
-  "main": "index.html",
+  "main": "src/index.html",
   "scripts": {
     "start": "npm run build; http-server dist/",
     "build": "make build",

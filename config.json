@@ -1,6 +1,6 @@
 [
   {
-    "stackName": "js-api-gateway",
+    "stackName": "ts-apigateway",
     "apiLogicalResourceName": "ServiceApi",
     "stageName": "v1",
     "name": "Typescript Example"

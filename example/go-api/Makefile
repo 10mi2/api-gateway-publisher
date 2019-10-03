@@ -6,7 +6,7 @@ ifeq ($(STACK_BUCKET),)
 STACK_BUCKET := openapi-plumbing
 endif
 
-ifeq ($(STACK_BUCKET),)
+ifeq ($(STACK_NAME),)
 STACK_NAME := go-apigateway
 endif
 
