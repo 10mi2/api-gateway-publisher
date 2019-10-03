@@ -12,10 +12,10 @@
     "deploy:sam": "aws cloudformation package --template-file template.yaml --output-template template_deploy.yaml --s3-bucket ${STACK_BUCKET}",
     "deploy:spec": "aws s3 cp ./openapi.yaml s3://${STACK_BUCKET}/${STACK_NAME}-openapi.yaml",
     "deploy:cloudformation": "aws cloudformation deploy --no-fail-on-empty-changeset --template-file template_deploy.yaml --stack-name ${STACK_NAME} --parameter-overrides \"PlumbingBucket=${STACK_BUCKET}\" --capabilities CAPABILITY_IAM",
-    "deploy:documentation": "REST_API_ID=`npm run get:ApiId` && VERSION=`npm run version:view` aws apigateway create-documentation-version --rest-api-id $(REST_API_ID) --documentation-version `` --stage-name v1",
-    "teardown": "STACK_NAME='js-api-gateway' && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
-    "build": "npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
-    "deploy": "STACK_NAME='js-api-gateway' && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation",
+    "deploy:documentation": "export REST_API_ID=`npm run get:ApiId` && export VERSION=`npm run version:view` aws apigateway create-documentation-version --rest-api-id $(REST_API_ID) --documentation-version `` --stage-name v1",
+    "teardown": "export STACK_NAME='js-api-gateway' && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
+    "build": "npm install; npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
+    "deploy": "export STACK_NAME='js-api-gateway' && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation",
     "test": "aws cloudformation validate-template --template-body file://template.yaml"
   },
   "keywords": [
