@@ -24,13 +24,12 @@ config.forEach(row => {
 
   if (row.url === undefined) {
     // Define where you want to save the openAPI Spec to
-    urlLocation = `services/${row.name}.yaml`
+    urlLocation = `services/${row.name.replace(/[\W]/g, '_')}.yaml`
 
     let apiGatewayID = row.id
     if (row.id === undefined) {
-      
       // Get the gatewayID by the name of the stack
-      const getIdCmd = `aws cloudformation describe-stacks --stack-name ${row.stackName} --query "Stacks[0].Outputs[?OutputKey == 'ServiceApiId'].OutputValue" --output text`
+      const getIdCmd = `aws cloudformation describe-stack-resources --stack-name ${row.stackName} --logical-resource-id ${row.apiLogicalResourceName} --query "StackResources[0].PhysicalResourceId" --output text`
       apiGatewayID = execSync(getIdCmd).toString().replace(/[\n]/g, '')
     }
     const cmd = `aws apigateway get-export --parameters extensions='integrations' --rest-api-id ${apiGatewayID} --stage-name ${row.stageName} --accepts application/yaml --export-type oas30 ${distDir}/${urlLocation}`
