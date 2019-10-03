@@ -5,6 +5,8 @@ Parameters:
   StageName:
     Type: String
     Default: v1
+  ApiVersion:
+    Type: String
   PlumbingBucket:
     Type: String
     Default: openapi-plumbing
