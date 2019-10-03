@@ -1,13 +1,12 @@
 # api-gateway-publisher
-Publish your API Gateway Microservice Swagger documentation to users who you don't want logging in to your aws console.  Creates a Swagger UI front end and a dropdown for each service you configure.
+Publish your API Gateway Microservice Swagger documentation to users who you don't want logging in to your aws console.  Creates a Swagger UI boilerplate front end and a dropdown for each service you configure.
 
 ## What is this tool for
 The API Gateway can import and export swagger documents to utilize for internal routing and documenations.  This tool takes the export of api gateway swagger json files and packages them with a swagger UI along with a cloudformation template to publish a static website of your documentation.
 
 ## Config requirements
 There are three ways to define an OpenAPI spec you want included in your docs service:
-- By Cloudformation Stack Name
-    - This requires an output in the template named `ServiceApiId` exists in the stack outputs section
+- By Cloudformation Stack Name and ApiGateway LogicalName (See Example)
 - By API Gateway ID
 - By Hosted URL source
 
@@ -15,7 +14,8 @@ There are three ways to define an OpenAPI spec you want included in your docs se
 ```json
 [
   {
-    "stackName": "<Name of the cloudformation stack, (Requires an output in the stack of `ServiceApiId`)>",
+    "stackName": "<Name of the Cloudformation stack>",
+    "apiLogicalResourceName": "<Name of the API Gateway key in the Cloudformation Yaml File>",
     "stageName": "<Api Gateway Stage Name>",
     "name": "<Name of the service and what you want to show up in the dropdown>"
   },
@@ -31,11 +31,12 @@ There are three ways to define an OpenAPI spec you want included in your docs se
 ]
 ```
 
-## Notes for later
-- Add a cron like experience.  Assume docs are published to the most recent from the api side, and re upload every night depending on user config
-- Add to the API Example a way to poll the current version and make that what gets published so we have a code to service to documentation connection
-    - This is now part of the deployment api example.  When the api gets deployed, it also creates a documentation version
-- Some pipeline event to trigger the next build.
+## Ongoing things to be done
+- Improve the UI.
+  - Currently the UI is swagger UI boilerplate.  Ideally we should wrap some front end frameworks and ensure we can use this in a more customized front end application.
+- Improve build schedule.
+  - We should build out a cron type experience in updating the version documentation.
+  - Integrate some kind of CI/CD to allow for easier building based on events
 
 ## To Run
 
