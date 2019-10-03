@@ -1,11 +1,14 @@
 [
   {
-    "stackName": "openapi-gateway-example",
+    "stackName": "js-api-gateway",
+    "apiLogicalResourceName": "ServiceApi",
     "stageName": "v1",
-    "name": "TestApi"
+    "name": "Typescript Example"
   },
   {
-    "url": "https://petstore.swagger.io/v2/swagger.json",
-    "name": "Pets"
+    "stackName": "go-apigateway",
+    "apiLogicalResourceName": "ServiceApi",
+    "stageName": "v1",
+    "name": "Go Example"
   }
 ]
