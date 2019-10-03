@@ -51,10 +51,8 @@ publish_documentation:
 	@$(eval REST_API_ID=$(shell aws cloudformation describe-stack-resources --stack-name openapi-gateway-example --logical-resource-id ServiceApi --query "StackResources[0].PhysicalResourceId" --output text))
 	@aws apigateway create-documentation-version \
 		--rest-api-id $(REST_API_ID) \
-		--documentation-version `aws cloudformation describe-stack-resources --stack-name openapi-gateway-example --logical-resource-id ServiceApi --query "StackResources[0].PhysicalResourceId" --output text` \
+		--documentation-version $(VERSION) \
 		--stage-name v1
-
-
 
 .PHONY: deploy
 deploy: build deploy_cloudformation publish_documentation

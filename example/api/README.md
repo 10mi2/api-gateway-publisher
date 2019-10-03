@@ -1,5 +1,5 @@
 # API with Swagger Example
-This example builds a very simple api and has a construct template using AWS SAM.  I added a swagger document to the API spec so we get more than just the method and path.
+This example builds a very simple GOLANG api Gateway and has a construct template using AWS SAM.  I added a swagger document to the API spec so we end up with a documented api that is published and ready for a build using the parent project.
 
 ## Steps needed to have this show up properly in our docs site
 - Build the API Gateway Service
