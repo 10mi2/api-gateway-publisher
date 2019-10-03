@@ -6,6 +6,10 @@ ifeq ($(STACK_BUCKET),)
 STACK_BUCKET := openapi-plumbing
 endif
 
+ifeq ($(STACK_BUCKET),)
+STACK_NAME := go-apigateway
+endif
+
 .PHONY: test
 test:
 	aws cloudformation validate-template --template-body file://template.yaml
@@ -31,7 +35,7 @@ api: build
 
 .PHONY: deploy_cloudformation
 deploy_cloudformation:
-	@aws s3 cp ./openapi.yaml s3://$(STACK_BUCKET)/openapi-gateway-example-openapi.yaml
+	@aws s3 cp ./openapi.yaml s3://$(STACK_BUCKET)/$(STACK_NAME)-openapi.yaml
 
 	@aws cloudformation package \
 		--template-file template.yaml \
@@ -41,14 +45,14 @@ deploy_cloudformation:
 	@aws cloudformation deploy \
 		--no-fail-on-empty-changeset \
 		--template-file template_deploy.yaml \
-		--stack-name openapi-gateway-example \
+		--stack-name $(STACK_NAME) \
 		--parameter-overrides "PlumbingBucket=$(STACK_BUCKET)" \
 		--capabilities CAPABILITY_IAM
 
 .PHONY: publish_documentation
 publish_documentation:
 	# Publish a new version of the documentation for this api
-	@$(eval REST_API_ID=$(shell aws cloudformation describe-stack-resources --stack-name openapi-gateway-example --logical-resource-id ServiceApi --query "StackResources[0].PhysicalResourceId" --output text))
+	@$(eval REST_API_ID=$(shell aws cloudformation describe-stack-resources --stack-name $(STACK_NAME) --logical-resource-id ServiceApi --query "StackResources[0].PhysicalResourceId" --output text))
 	@aws apigateway create-documentation-version \
 		--rest-api-id $(REST_API_ID) \
 		--documentation-version $(VERSION) \
@@ -59,4 +63,4 @@ deploy: build deploy_cloudformation publish_documentation
 
 .PHONY: teardown
 teardown: clean
-	@aws cloudformation delete-stack --stack-name openapi-gateway-example
+	@aws cloudformation delete-stack --stack-name $(STACK_NAME)

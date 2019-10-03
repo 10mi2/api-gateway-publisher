@@ -1,10 +1,9 @@
 openapi: 3.0.2
 info:
-  title: Example
-  description: Example Microservice API
+  title: GO Example
+  description: Example GOLANG Microservice API
   contact:
     email: info@tenmilesquare.com
-  version: 1.0.0
 tags:
   - name: Home
     description: The basic url usage
