@@ -1,0 +1,36 @@
+{
+  "name": "@tenmilesquare/api-gateway-openapi-example",
+  "version": "0.0.1",
+  "description": "A boilerplate API to show what is possible through api gateway with OpenAPI spec integration.",
+  "main": "src/index.ts",
+  "scripts": {
+    "env": "export STACK_NAME=${STACK_NAME:=ts-api-gateway} && export STACK_BUCKET=${STACK_BUCKET:=openapi-plumbing}",
+    "start": "npm run build && sam local start-api",
+    "clean": "rm -rf dist",
+    "version:view": "cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g'",
+    "get:ApiId": "npm run env && aws cloudformation describe-stack-resources --stack-name ${STACK_NAME} --logical-resource-id ServiceApi --query \"StackResources[0].PhysicalResourceId\" --output text",
+    "build:compile": "tsc",
+    "deploy:sam": "npm run env && aws cloudformation package --template-file template.yaml --output-template template_deploy.yaml --s3-bucket ${STACK_BUCKET}",
+    "deploy:spec": "npm run env && aws s3 cp ./openapi.yaml s3://${STACK_BUCKET}/${STACK_NAME}-openapi.yaml",
+    "deploy:cloudformation": "npm run env && aws cloudformation deploy --no-fail-on-empty-changeset --template-file template_deploy.yaml --stack-name ${STACK_NAME} --parameter-overrides \"PlumbingBucket=${STACK_BUCKET}\" --capabilities CAPABILITY_IAM",
+    "deploy:documentation": "export REST_API_ID=`npm run --silent get:ApiId` && export VERSION=`npm run --silent version:view` && aws apigateway create-documentation-version --rest-api-id ${REST_API_ID} --documentation-version ${VERSION} --stage-name v1",
+    "teardown": "npm run env && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
+    "build": "npm install; npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
+    "deploy": "npm run env && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation && npm run deploy:documentation",
+    "test": "aws cloudformation validate-template --template-body file://template.yaml"
+  },
+  "keywords": [
+    "api",
+    "gateway"
+  ],
+  "author": "Ten Mile Square <info@tenmilesquare.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.33",
+    "@types/node": "^12.7.9",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.540.0"
+  }
+}
