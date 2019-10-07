@@ -31,6 +31,11 @@ There are three ways to define an OpenAPI spec you want included in your docs se
 ]
 ```
 
+
+## Lessons Learned in building the examples.
+Remember that the swagger is both an input and an output.  The dream is to define the spec and have the api built automagically.  The real world is far from this ideal, but nevertheless OpenAPI persists. This is confusing and unnecessary in the end, but it's the world of swagger. So AWS has a lot of requirements for the input to swagger that are not part of the output.  But if you leave them out, then you will end up chasing your tail for a **LONG** time.  Even though you elsewhere define authorization.  If you don't duplicate that information in the Open API Spec.  The **WHOLE** api will fail! Not just Auth, not just in swagger. Failure to include the Authorization Integration info in the swagger document AND the Template complete with Cognito ID information will brick the whole thing.  What's more is you won't get an error that remotely resembles what has happened. Just `Unauthorized`.  I lost two days of my life chasing this.  Please learn from my pain.
+
+
 ## Ongoing things to be done
 - Improve the UI.
   - Currently the UI is swagger UI boilerplate.  Ideally we should wrap some front end frameworks and ensure we can use this in a more customized front end application.
