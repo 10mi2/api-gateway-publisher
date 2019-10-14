@@ -1,0 +1,181 @@
+openapi: 3.0.2
+info:
+  title: Authentication Open API Gateway Example
+  description: An example using Cognito Token Authentication
+  contact:
+    email: info@tenmilesquare.com
+  version:
+    Fn::Sub: "${ApiVersion}"
+tags:
+  - name: Home
+    description: Useful examples
+  - name: CORS
+    description: CORS Support
+paths:
+  /echo/{id}:
+    get:
+      tags:
+        - Home
+      summary: An unauthenticated endpoint to show
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: test
+          required: true
+          description: What you want to be said back to you
+      responses:
+        '200':
+          description: Returns the string you passed in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Something went wrong
+      security: []
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: 200
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiHandlerFunction.Arn}/invocations"
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+    options:
+      tags:
+        - CORS
+      summary: CORS Support
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: test
+          required: true
+          description: The string you want sent back to you
+      responses:
+        '200':
+          description: "Default CORS Response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+          content: {}
+      security: []
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: '200'
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: '''GET,OPTIONS'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        passthroughBehavior: when_no_match
+        type: mock
+  /auth/echo/{id}:
+    get:
+      tags:
+        - Home
+      summary: Echo back, but authenticated
+      description: Send back the string you pass to the path, but this time with authentication
+      operationId: getAuthMessage
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: test
+          required: true
+          description: The string you want sent back to you
+      responses:
+        '200':
+          description: Echo Service with Auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: You must be logged in to do this action
+          content: {}
+      security:
+        - CognitoAuthorizer: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiHandlerFunction.Arn}/invocations"
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+    options:
+      tags:
+        - CORS
+      summary: CORS Support
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: test
+          required: true
+          description: The string you want sent back to you
+      responses:
+        '200':
+          description: Default CORS Response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+          content: {}
+      security:
+        - CognitoAuthorizer: []
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: '200'
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: '''PUT,OPTIONS'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        passthroughBehavior: when_no_match
+        type: mock
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        auth:
+          type: boolean
+        message:
+          type: string
+  securitySchemes:
+    CognitoAuthorizer:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: cognito_user_pools
+      x-amazon-apigateway-authorizer:
+        providerARNs:
+        - Fn:ImportValue: UserPoolArn
+        type: cognito_user_pools

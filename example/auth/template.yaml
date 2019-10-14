@@ -1,0 +1,81 @@
+Description: "Microservice API Boilerplate example"
+Transform: "AWS::Serverless-2016-10-31"
+
+Parameters:
+  YourEmail:
+    Type: String
+  StageName:
+    Type: String
+    Default: v1
+  ApiVersion:
+    Type: String
+  PlumbingBucket:
+    Type: String
+    Default: openapi-plumbing
+
+Resources:
+  # All the Auth Creation
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      UserPoolName: TestingUsers
+      UsernameAttributes:
+      - email
+      AutoVerifiedAttributes:
+      - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: true
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: true
+  # The client only allows for login using the SDK
+  UserPoolTokenClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+      - USER_PASSWORD_AUTH
+
+  # You don't actually need the API, but it does allow you to centralize your auth config, and allows you to add an Open API Spec
+  # If you change the name of this Logical ID, then you need to update the Makefile to pull the correct API Gateway ID based on this logical ID.
+  ServiceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: OpenAPIGateway-Example
+      StageName: !Ref StageName
+      DefinitionBody:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
+            Location:
+              Fn::Sub: "s3://${PlumbingBucket}/${AWS::StackName}-openapi.yaml"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt "UserPool.Arn"
+  ApiHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Handles Crud operations for the Locations service
+      Runtime: nodejs10.x
+      CodeUri: ./dist
+      Handler: index.handler
+      Timeout: 10
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /echo/{id}
+            RestApiId: !Ref ServiceApi
+            Method: get
+        GetAuthenticated:
+          Type: Api
+          Properties:
+            Path: /echo/auth/{id}
+            RestApiId: !Ref ServiceApi
+            Method: get

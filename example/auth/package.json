@@ -1,0 +1,35 @@
+{
+  "name": "auth",
+  "version": "0.0.1",
+  "description": "An example of an api gateway with authentication",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "npm run build && sam local start-api",
+    "clean": "rm -rf dist",
+    "version:view": "cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g'",
+    "get:ApiId": "source env.sh && aws cloudformation describe-stack-resources --stack-name ${STACK_NAME} --logical-resource-id ServiceApi --query \"StackResources[0].PhysicalResourceId\" --output text",
+    "build:compile": "tsc",
+    "deploy:sam": "source env.sh && aws cloudformation package --template-file template.yaml --output-template template_deploy.yaml --s3-bucket ${STACK_BUCKET}",
+    "deploy:spec": "source env.sh && aws s3 cp ./openapi.yaml s3://${STACK_BUCKET}/${STACK_NAME}-openapi.yaml",
+    "deploy:cloudformation": "source env.sh && export VERSION=`npm run --silent version:view` && aws cloudformation deploy --no-fail-on-empty-changeset --template-file template_deploy.yaml --stack-name ${STACK_NAME} --parameter-overrides \"PlumbingBucket=${STACK_BUCKET}\" \"ApiVersion=${VERSION}\" \"YourEmail=${YOUR_EMAIL}\" --capabilities CAPABILITY_IAM",
+    "deploy:documentation": "export REST_API_ID=`npm run --silent get:ApiId` && export VERSION=`npm run --silent version:view` && aws apigateway create-documentation-version --rest-api-id ${REST_API_ID} --documentation-version ${VERSION} --stage-name v1",
+    "teardown": "source env.sh && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
+    "build": "npm install; npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
+    "deploy": "source env.sh && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation && npm run deploy:documentation",
+    "test": "aws cloudformation validate-template --template-body file://template.yaml"
+  },
+  "keywords": [
+    "API",
+    "gateway"
+  ],
+  "author": "Ten Mile Square <info@tenmilesquare.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.33",
+    "@types/node": "^12.7.9",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.540.0"
+  }
+}
