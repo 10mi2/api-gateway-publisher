@@ -1,14 +1,23 @@
-[
-  {
-    "stackName": "ts-apigateway",
-    "apiLogicalResourceName": "ServiceApi",
-    "stageName": "v1",
-    "name": "Typescript Example"
-  },
-  {
-    "stackName": "go-apigateway",
-    "apiLogicalResourceName": "ServiceApi",
-    "stageName": "v1",
-    "name": "Go Example"
-  }
-]
+{
+  "combined": false,
+  "services": [
+    {
+      "stackName": "auth-apigateway",
+      "apiLogicalResourceName": "ServiceApi",
+      "stageName": "v1",
+      "name": "Typescript Auth Example"
+    },
+    {
+      "stackName": "ts-apigateway",
+      "apiLogicalResourceName": "ServiceApi",
+      "stageName": "v1",
+      "name": "Typescript Example"
+    },
+    {
+      "stackName": "go-apigateway",
+      "apiLogicalResourceName": "ServiceApi",
+      "stageName": "v1",
+      "name": "Go Example"
+    }
+  ]
+}

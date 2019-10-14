@@ -1,11 +1,12 @@
 // This script fetches the api gateway ID swagger documents and compiles them into dist/swagger-config.json
 // If the config has a row with an external url, then it will pass that config along as well.
 
-const execSync = require('child_process').execSync;
-const fs = require('fs')
+import { execSync } from 'child_process';
+import * as fs from 'fs';
 
 // Relative path to the config module. Just importing it as JSON
-const config = require('../config.json')
+const configContent = fs.readFileSync('./config.json', { encoding: 'utf8'})
+const config = JSON.parse(configContent)
 const distDir = 'dist'
 
 // Create the directories in order to pass the swagger files to them
@@ -19,7 +20,7 @@ const swaggerConfig = {
   urls: []
 }
 
-config.forEach(row => {
+config.services.forEach(row => {
   let urlLocation
 
   if (row.url === undefined) {

@@ -8,10 +8,9 @@ build:
 
 	# Install and bundle the UI in the dist directory
 	npm i
-	# webpack
 	# This will parse the config doc and download the swagger json files to correct directory
 	# It is expected that you have properly configured access to your AWS environment
-	node scripts/fetch-api-gateway-swagger.js
+	./node_modules/.bin/ts-node scripts/fetch-api-gateway-swagger.ts
 
 .PHONY: deploy
 deploy: build
