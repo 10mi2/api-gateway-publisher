@@ -1,4 +1,8 @@
 
+.PHONY: clean
+clean:
+	rm -rf dist
+
 .PHONY: build
 build: 
 	# Clean the existing dist directory to ensure we get the latest
