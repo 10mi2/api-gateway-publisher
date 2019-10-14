@@ -1,4 +1,4 @@
-Description: "Microservice API Boilerplate example"
+Description: "Authenticated microservice API Boilerplate example"
 Transform: "AWS::Serverless-2016-10-31"
 
 Parameters:
@@ -40,13 +40,20 @@ Resources:
       GenerateSecret: false
       ExplicitAuthFlows:
       - USER_PASSWORD_AUTH
+  UserPoolUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      DesiredDeliveryMediums:
+        - EMAIL
+      Username: !Ref YourEmail
+      UserPoolId: !Ref UserPool
 
   # You don't actually need the API, but it does allow you to centralize your auth config, and allows you to add an Open API Spec
   # If you change the name of this Logical ID, then you need to update the Makefile to pull the correct API Gateway ID based on this logical ID.
   ServiceApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: OpenAPIGateway-Example
+      Name: Auth-OpenAPIGateway-Example
       StageName: !Ref StageName
       DefinitionBody:
         Fn::Transform:
@@ -61,21 +68,33 @@ Resources:
   ApiHandlerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Description: Handles Crud operations for the Locations service
+      Description: Handles Echo Service with an authenticated and unauthenticated endpoint
       Runtime: nodejs10.x
       CodeUri: ./dist
       Handler: index.handler
       Timeout: 10
       Events:
+        GetAuthenticated:
+          Type: Api
+          Properties:
+            Path: /auth/echo/{id}
+            RestApiId: !Ref ServiceApi
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
         Get:
           Type: Api
           Properties:
             Path: /echo/{id}
             RestApiId: !Ref ServiceApi
             Method: get
-        GetAuthenticated:
-          Type: Api
-          Properties:
-            Path: /echo/auth/{id}
-            RestApiId: !Ref ServiceApi
-            Method: get
+Outputs:
+  CognitoID:
+    Description: The Cognito UserPool ID
+    Value: !Ref UserPool
+  CognitoClientID:
+    Description: The Cognito UserPool Client ID
+    Value: !Ref UserPoolTokenClient
+  ApiUrl:
+    Description: The API URL
+    Value: !Sub "https://${ServiceApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"

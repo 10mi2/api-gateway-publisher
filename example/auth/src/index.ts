@@ -8,9 +8,8 @@ const DEFAULT_HEADERS = {
  * Handles all incoming requests associated with the Locations microservice
  * 
  */
-exports.crud = async(event: APIGatewayEvent, context: Context, callback: Callback) => {
+exports.handler = async(event: APIGatewayEvent, context: Context, callback: Callback) => {
     const echoValue = event.pathParameters.id || ''
-
     const isAuth = event.path.indexOf('auth') > -1
 
     callback(null, {
