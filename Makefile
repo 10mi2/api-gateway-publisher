@@ -1,4 +1,8 @@
 
+.PHONY: test
+test:
+	aws cloudformation validate-template --template-body file://template.yaml
+
 .PHONY: clean
 clean:
 	rm -rf dist
