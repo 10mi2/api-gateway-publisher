@@ -1,0 +1,11 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Open API from AWS",
+    "description": "Documentation for Amazon",
+    "contact": {
+      "email": "info@example.com"
+    },
+    "version": "0.0.1"
+  }
+}

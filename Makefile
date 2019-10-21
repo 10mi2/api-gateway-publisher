@@ -17,8 +17,8 @@ build: clean
 	# Clean the existing dist directory to ensure we get the latest
 	mkdir -p dist/ui
 	cp ui/index.html dist/ui/index.html
-	echo '{"urls":[]}' > dist/ui/swagger-config.json
-	
+	cp ui/openapi.json dist/ui/openapi.json
+
 	tsc
 	npm prune --production
 	cp -r node_modules dist/src
