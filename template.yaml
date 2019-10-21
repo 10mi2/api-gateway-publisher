@@ -95,7 +95,7 @@ Resources:
   HostedZone:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !Ref DomainHostedZone
+      HostedZoneId: !Ref HostedZoneId
       RecordSets:
       - Name: !Sub "docs.${Domain}"
         Type: A
