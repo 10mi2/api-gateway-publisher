@@ -7,9 +7,13 @@ clean:
 .PHONY: build
 build: clean
 	# Clean the existing dist directory to ensure we get the latest
-	mkdir dist
-	cp ui/index.html dist/index.html
-	echo '{"urls":[]}' > dist/swagger-config.json
+	mkdir -p dist/ui
+	cp ui/index.html dist/ui/index.html
+	echo '{"urls":[]}' > dist/ui/swagger-config.json
+	
+	tsc
+	npm prune --production
+	cp -r node_modules dist/src
 
 .PHONY: deploy
 deploy: build
@@ -25,4 +29,4 @@ deploy: build
 		--stack-name $(STACK_NAME) \
 		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
-	aws s3 sync dist/ s3://docs.$(DOMAIN) --delete
+	aws s3 sync dist/ui/ s3://docs.$(DOMAIN) --delete

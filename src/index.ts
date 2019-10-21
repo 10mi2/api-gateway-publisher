@@ -3,7 +3,6 @@ import * as response from 'cfn-response';
 
 import { S3Service } from './s3.service';
 
-
 const DEST_BUCKET = process.env.SITE_BUCKET
 
 /**
@@ -19,7 +18,7 @@ exports.handler = (event: CloudFormationCustomResourceEventCommon, context: Cont
     response.send(event,context, response.SUCCESS, null)
   }
   else {
-    requestParams = event['']
+    // requestParams = event['']
     console.log('update the docs with the location that was passed in')
     response.send(event, context, response.SUCCESS, null)
   }

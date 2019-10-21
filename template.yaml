@@ -15,7 +15,7 @@ Resources:
     Properties:
       Description: Handles the upload of the S3 OpenAPI Spec files and exports this method as the custom service token
       Runtime: nodejs10.x
-      CodeUri: ./dist
+      CodeUri: ./dist/src
       Handler: index.handler
       Timeout: 30
       Environment:
