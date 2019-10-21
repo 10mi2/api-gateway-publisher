@@ -36,3 +36,7 @@ deploy: build
 		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
 	aws s3 sync dist/ui/ s3://docs.$(DOMAIN) --delete
+
+.PHONY: teardown
+test:
+	aws cloudformation delete-stack --stack-name $(STACK_NAME)
