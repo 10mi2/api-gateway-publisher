@@ -2,25 +2,27 @@
 .PHONY: clean
 clean:
 	rm -rf dist
+	rm -rf template_deploy.yaml
 
 .PHONY: build
-build: 
+build: clean
 	# Clean the existing dist directory to ensure we get the latest
-	rm -rf dist
 	mkdir dist
-	cp src/index.html dist/index.html
-
-	# Install and bundle the UI in the dist directory
-	npm i
-	# This will parse the config doc and download the swagger json files to correct directory
-	# It is expected that you have properly configured access to your AWS environment
-	./node_modules/.bin/ts-node scripts/fetch-api-gateway-swagger.ts
+	cp ui/index.html dist/index.html
+	echo '{"urls":[]}' > dist/swagger-config.json
 
 .PHONY: deploy
 deploy: build
+	aws cloudformation package \
+		--template-file template.yaml \
+		--output-template template_deploy.yaml \
+		--s3-bucket $(STACK_BUCKET)
+
 	# Deploy the cloudformation stack
 	aws cloudformation deploy \
 		--no-fail-on-empty-changeset \
-		--template-file cloudformation.yaml \
-		--stack-name api-gateway-publisher \
-		--parameter-overrides "Domain=$(DOMAIN)"
+		--template-file template.yaml \
+		--stack-name $(STACK_NAME) \
+		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
+
+	aws s3 sync dist/ s3://docs.$(DOMAIN) --delete

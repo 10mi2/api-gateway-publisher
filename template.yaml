@@ -1,13 +1,27 @@
 Description: API Documentation Site
+Transform: "AWS::Serverless-2016-10-31"
 
 Parameters:
-  DomainHostedZone:
+  HostedZoneId:
     Type: String
   Domain:
     Type: String
 
 # Basic idea is to write an upload lambda trigger that runs the merger code for swagger
 Resources:
+  # Have a custom resource Lambda that allows for uploading the swagger doc
+  DocsDeployFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Handles the upload of the S3 OpenAPI Spec files and exports this method as the custom service token
+      Runtime: nodejs10.x
+      CodeUri: ./dist
+      Handler: index.handler
+      Timeout: 30
+      Environment:
+        Variables:
+          SITE_BUCKET: !Sub "docs.${Domain}"
+
   ## Specifying the bucket to upload assets for this location
   SiteBucket:
     Type: AWS::S3::Bucket
@@ -34,7 +48,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: "Allows Access from the CloudFormation CDN to the Bucket"
-  
+
   # Certificate Creation
   Certificate:
     Type: AWS::CertificateManager::Certificate
@@ -93,3 +107,9 @@ Resources:
         AliasTarget:
           HostedZoneId: Z2FDTNDATAQYW2
           DNSName: !GetAtt "Cloudfront.DomainName"
+Outputs:
+  DocsDeployFunctionArn:
+    Description: ARN of the lambda function that handles the upload of the OpenAPI Doc
+    Value: !GetAtt DocsDeployFunction.Arn
+    Export:
+      Name: DocsDeployFunctionArn
