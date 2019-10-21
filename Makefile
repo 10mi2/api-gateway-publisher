@@ -6,6 +6,7 @@ clean:
 
 .PHONY: build
 build: clean
+	npm i
 	# Clean the existing dist directory to ensure we get the latest
 	mkdir -p dist/ui
 	cp ui/index.html dist/ui/index.html
