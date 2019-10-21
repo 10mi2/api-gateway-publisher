@@ -1,3 +1,6 @@
+ifeq ($(PARENT_DOMAIN),)
+PARENT_DOMAIN=$(DOMAIN)
+endif
 
 .PHONY: test
 test:
@@ -33,7 +36,7 @@ deploy: build
 		--template-file template_deploy.yaml \
 		--stack-name $(STACK_NAME) \
 		--capabilities CAPABILITY_IAM \
-		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
+		--parameter-overrides "ParentDomain=$(PARENT_DOMAIN)" "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
 	aws s3 sync dist/ui/ s3://docs.$(DOMAIN) --delete
 

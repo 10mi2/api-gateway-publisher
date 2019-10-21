@@ -6,6 +6,8 @@ Parameters:
     Type: String
   Domain:
     Type: String
+  ParentDomain:
+    Type: String
 
 # Basic idea is to write an upload lambda trigger that runs the merger code for swagger
 Resources:
@@ -58,7 +60,7 @@ Resources:
         - !Sub "www.docs.${Domain}"
       DomainValidationOptions:
         - DomainName: !Sub "docs.${Domain}"
-          ValidationDomain: !Ref Domain
+          ValidationDomain: !Ref ParentDomain
   Cloudfront:
     Type: AWS::CloudFront::Distribution
     DependsOn:
