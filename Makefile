@@ -32,6 +32,7 @@ deploy: build
 		--no-fail-on-empty-changeset \
 		--template-file template_deploy.yaml \
 		--stack-name $(STACK_NAME) \
+		--capabilities CAPABILITY_IAM \
 		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
 	aws s3 sync dist/ui/ s3://docs.$(DOMAIN) --delete
