@@ -31,11 +31,12 @@ export class S3Service {
     })
   }
 
-  static upload(bucket, path): Promise<string> {
+  static upload(bucket: string, path: string, body: Buffer): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       client.upload({
         Bucket: bucket,
-        Key: path
+        Key: path,
+        Body: body
       }, (err, data) => {
         if (!!err) {
           reject(err)

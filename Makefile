@@ -23,6 +23,10 @@ build: clean
 	npm prune --production
 	cp -r node_modules dist/src
 
+.PHONY: local
+local: build
+	sam local invoke -e events/create_event.json DocsDeployFunction --env-vars env.json
+
 .PHONY: deploy
 deploy: build
 	aws cloudformation package \
