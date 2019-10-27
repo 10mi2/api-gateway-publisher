@@ -23,6 +23,9 @@ Resources:
       Environment:
         Variables:
           SITE_BUCKET: !Sub "docs.${Domain}"
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref SiteBucket
 
   ## Specifying the bucket to upload assets for this location
   SiteBucket:
