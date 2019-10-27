@@ -44,10 +44,10 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
 
     // Upload the output results
     // await S3Service.upload(SITE_BUCKET, siteSpecPath, Buffer.from(JSON.stringify(api), 'utf-8'))
-    response.send(event, context, response.SUCCESS, null, event.RquestId)
+    response.send(event, context, response.SUCCESS, null, event.RequestId)
   } catch (err) {
     console.log('got to the error state even though I am about to call it successful')
     console.log(err)
-    response.send(event, context, response.SUCCESS, null, event.RquestId)
+    response.send(event, context, response.SUCCESS, null, event.RequestId)
   }
 }
