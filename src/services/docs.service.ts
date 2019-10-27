@@ -24,8 +24,6 @@ export async function load_openapi_config(): Promise<OpenApiConfig> {
 }
 
 export function update_openapi_config(config: OpenApiConfig): Promise<any> {
-  console.log('upading the config')
-  console.log(config)
   return S3Service.upload(SITE_BUCKET, 'config.json', JSON.stringify(config), 'application/json')
 }
 

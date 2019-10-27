@@ -16,7 +16,7 @@ exports.handler = async (event: CloudFormationCustomResourceEventCommon, context
     const config = await load_openapi_config()
 
     const incomingSpec = JSON.parse(event.ResourceProperties.DefinitionBody)
-    
+
     // Add the key and upload the file
     const incomingSpecPath = `services/${key}.json`
     S3Service.upload(SITE_BUCKET, incomingSpecPath, JSON.stringify(incomingSpec), 'application/json')
