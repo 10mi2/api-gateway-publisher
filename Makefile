@@ -27,7 +27,7 @@ local: build
 	sam local invoke -e events/create_event.json DocsDeployFunction --env-vars env.json
 
 .PHONY: deploy_cloudformation
-deploy:
+deploy_cloudformation:
 	aws cloudformation package \
 		--template-file template.yaml \
 		--output-template template_deploy.yaml \
