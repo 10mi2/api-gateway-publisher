@@ -17,7 +17,6 @@ build: clean
 	# Clean the existing dist directory to ensure we get the latest
 	mkdir -p dist/ui
 	cp ui/index.html dist/ui/index.html
-	cp ui/openapi.json dist/ui/openapi.json
 
 	tsc
 	npm prune --production
@@ -27,8 +26,8 @@ build: clean
 local: build
 	sam local invoke -e events/create_event.json DocsDeployFunction --env-vars env.json
 
-.PHONY: deploy
-deploy: build
+.PHONY: deploy_cloudformation
+deploy:
 	aws cloudformation package \
 		--template-file template.yaml \
 		--output-template template_deploy.yaml \
@@ -42,7 +41,14 @@ deploy: build
 		--capabilities CAPABILITY_IAM \
 		--parameter-overrides "ParentDomain=$(PARENT_DOMAIN)" "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
-	aws s3 sync dist/ui/ s3://docs.$(DOMAIN) --delete
+.PHONY: upload
+upload:
+	aws s3 sync dist/ui/ s3://docs.$(DOMAIN)
+	$(eval CLOUDFRONT_ID=$(shell aws cloudformation describe-stack-resources --stack-name $(STACK_NAME) --logical-resource-id Cloudfront --query "StackResources[0].PhysicalResourceId" --output text))
+	aws cloudfront create-invalidation --distribution-id $(CLOUDFRONT_ID) --paths /*
+
+.PHONY: deploy
+deploy: build deploy_cloudformation upload
 
 .PHONY: teardown
 teardown:

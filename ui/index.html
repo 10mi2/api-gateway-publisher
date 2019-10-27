@@ -16,14 +16,14 @@
     window.onload = function() {
         // Build a system
         const ui = SwaggerUIBundle({
-            url: "openapi.json",
+            configUrl: 'config.json',
             dom_id: '#swagger-ui',
             deepLinking: true,
             presets: [
                 SwaggerUIBundle.presets.apis,
                 SwaggerUIStandalonePreset
             ],
-            layout: "StandaloneLayout",
+            layout: "StandaloneLayout"
         })
         window.ui = ui
     }

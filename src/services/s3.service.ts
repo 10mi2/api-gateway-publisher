@@ -16,27 +16,33 @@ export class S3Service {
     })
   }
 
-  static get<T>(bucket, path): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
+  static get(bucket, path): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
       client.getObject({
         Bucket: bucket,
         Key: path
-      }, (err, data) => {
+      }, (err, data: S3.Types.GetObjectOutput) => {
         if (!!err) {
           reject(err)
           return
         }
-        resolve(data.Body as T)
+        resolve(data.Body as Buffer)
       })
     })
   }
+  
+  static async getJSON<T>(bucket, path): Promise<T> {
+    const obj = await S3Service.get(bucket, path)
+    return JSON.parse(obj.toString()) as unknown as T
+  }
 
-  static upload(bucket: string, path: string, body: Buffer): Promise<string> {
+  static upload(bucket: string, path: string, body: string, type: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       client.upload({
         Bucket: bucket,
         Key: path,
-        Body: body
+        Body: Buffer.from(body),
+        ContentType: type
       }, (err, data) => {
         if (!!err) {
           reject(err)
