@@ -15,7 +15,6 @@ export interface OpenApiConfigDefinition {
 export async function load_openapi_config(): Promise<OpenApiConfig> {
   try {
     const config = await S3Service.getJSON<OpenApiConfig>(SITE_BUCKET, 'config.json')
-    console.log(config)
     return config
   } catch(err) {
     console.log('initializeingconfig')

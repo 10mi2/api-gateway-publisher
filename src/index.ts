@@ -1,4 +1,4 @@
-import * as response from 'cfn-response';
+import { send, SUCCESS } from 'cfn-response-async';
 import { Callback, Context, CloudFormationCustomResourceEvent } from "aws-lambda";
 
 import { load_openapi_config, update_openapi_config } from './services/docs.service';
@@ -43,11 +43,10 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     await update_openapi_config(config)
 
     // Upload the output results
-    // await S3Service.upload(SITE_BUCKET, siteSpecPath, Buffer.from(JSON.stringify(api), 'utf-8'))
-    response.send(event, context, response.SUCCESS, null, event.RequestId)
+    await send(event, context, SUCCESS)
   } catch (err) {
     console.log('got to the error state even though I am about to call it successful')
     console.log(err)
-    response.send(event, context, response.SUCCESS, null, event.RequestId)
+    await send(event, context, SUCCESS)
   }
 }
