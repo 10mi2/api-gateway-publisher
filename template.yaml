@@ -27,6 +27,14 @@ Resources:
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref SiteBucket
+        - Statement:
+          - Sid: CloudfrontInvalidationPolicy
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - cloudfront:CreateInvalidation
+            Resource: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${Cloudfront}"
+        
 
   ## Specifying the bucket to upload assets for this location
   SiteBucket:
