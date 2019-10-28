@@ -3,6 +3,7 @@ import { Callback, Context, CloudFormationCustomResourceEvent } from "aws-lambda
 
 import { load_openapi_config, update_openapi_config } from './services/docs.service';
 import { S3Service } from './services/s3.service';
+import { CloudfrontService } from './services/cloudfront.service';
 
 const SITE_BUCKET = process.env.SITE_BUCKET
 
@@ -27,7 +28,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
           name: key,
           url: incomingSpecPath
         })
-    
+
         // Dedupe services in the config
         const serviceHash = {}
         config.urls.forEach(service => serviceHash[service.name] = service)
@@ -41,6 +42,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     }
 
     await update_openapi_config(config)
+    await CloudfrontService.createInvalidation('/*')
 
     // Upload the output results
     await send(event, context, SUCCESS)

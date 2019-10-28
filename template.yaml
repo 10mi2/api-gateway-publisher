@@ -23,6 +23,7 @@ Resources:
       Environment:
         Variables:
           SITE_BUCKET: !Sub "docs.${Domain}"
+          CLOUDFRONT_ID: !Ref CloudFront
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref SiteBucket
