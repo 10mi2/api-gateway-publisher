@@ -2,34 +2,20 @@
 Publish your API Gateway Microservice Swagger documentation to users who you don't want logging in to your aws console.  Creates a Swagger UI boilerplate front end and a dropdown for each service you configure.
 
 ## What is this tool for
+This creates a static site to host the OpenAPI website at docs.<your domain> and exposes a custom resource you can add to your cloudformation template to submit your OpenAPI spec at deploy time.  I have tried to include some API Gateway examples, but you can use anything so long as you parameterize and include your OpenAPI spec as the Definition Body
+
 The API Gateway can import and export swagger documents to utilize for internal routing and documenations.  This tool takes the export of api gateway swagger json files and packages them with a swagger UI along with a cloudformation template to publish a static website of your documentation.
 
-## Config requirements
-There are three ways to define an OpenAPI spec you want included in your docs service:
-- By Cloudformation Stack Name and ApiGateway LogicalName (See Example)
-- By API Gateway ID
-- By Hosted URL source
-
-### Examples:
-```json
-[
-  {
-    "stackName": "<Name of the Cloudformation stack>",
-    "apiLogicalResourceName": "<Name of the API Gateway key in the Cloudformation Yaml File>",
-    "stageName": "<Api Gateway Stage Name>",
-    "name": "<Name of the service and what you want to show up in the dropdown>"
-  },
-  {
-    "id": "<Api Gateway ID>",
-    "stageName": "<Api Gateway Stage Name>",
-    "name": "<Name of the service and what you want to show up in the dropdown>"
-  },
-  {
-    "url": "<Hosted Location of service openAPI Document> E.G. `https://petstore.swagger.io/v2/swagger.json`",
-    "name": "<Name of the service and what you want to show up in the dropdown>"
-  }
-]
-```
+## Config requirements for the static site
+You need to set the following variable in your environment to ensure things get deployed correctly.
+- STACK_BUCKET
+  - A valid bucket in your environment to upload the lambda code to.  This is necessary for the SAM deployment part. 
+- PARENT_DOMAIN
+  - The top level domain
+- DOMAIN
+  - The subdomain (Not including `docs.`) that you want to use.  This structure is in place to account for different environments.  I'm open to suggestion here.
+- HOSTED_ZONE_ID
+  - The AWS resource ID for the Hosted Zone to ensure docs.<Your Domain> ends up in the right place.
 
 
 ## Lessons Learned in building the examples.
@@ -39,9 +25,8 @@ Remember that the swagger is both an input and an output.  The dream is to defin
 ## Ongoing things to be done
 - Improve the UI.
   - Currently the UI is swagger UI boilerplate.  Ideally we should wrap some front end frameworks and ensure we can use this in a more customized front end application.
-- Improve build schedule.
-  - We should build out a cron type experience in updating the version documentation.
-  - Integrate some kind of CI/CD to allow for easier building based on events
+- Improve the config so we can have one OpenAPI spec instead of a list of them if you choose.
+- Add examples that come from API Gateway direclty if you imported your Open API Spec.
 
 ## To Run
 
