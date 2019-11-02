@@ -1,7 +1,10 @@
 import { CloudFront } from 'aws-sdk';
 const cloudfront = new CloudFront()
 
+
 const CLOUDFRONT_ID = process.env.CLOUDFRONT_ID
+// Set a datetime so I can run a unique cloudfront invalidation per lambda run.
+const now = (new Date()).getTime()
 
 export class CloudfrontService {
   static createInvalidation(...paths: string[]): Promise<void> {
@@ -9,7 +12,7 @@ export class CloudfrontService {
       cloudfront.createInvalidation({
         DistributionId: CLOUDFRONT_ID,
         InvalidationBatch: {
-          CallerReference: 'lambda',
+          CallerReference: `lambda_${now}`,
           Paths: {
             Quantity: paths.length,
             Items: paths

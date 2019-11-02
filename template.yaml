@@ -32,8 +32,7 @@ Resources:
             Effect: Allow
             Action:
               - cloudfront:CreateInvalidation
-            Resource: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${Cloudfront}"
-        
+            Resource: "*"
 
   ## Specifying the bucket to upload assets for this location
   SiteBucket:

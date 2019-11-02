@@ -42,13 +42,13 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     }
 
     await update_openapi_config(config)
-    await CloudfrontService.createInvalidation('/*')
+    await CloudfrontService.createInvalidation(`/${incomingSpecPath}`, '/config.json')
 
     // Upload the output results
-    await send(event, context, SUCCESS)
+    await send(event, context, SUCCESS, null, event.LogicalResourceId)
   } catch (err) {
     console.log('got to the error state even though I am about to call it successful')
     console.log(err)
-    await send(event, context, SUCCESS)
+    await send(event, context, SUCCESS, null, event.LogicalResourceId)
   }
 }
