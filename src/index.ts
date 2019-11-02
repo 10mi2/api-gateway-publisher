@@ -45,10 +45,10 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     await CloudfrontService.createInvalidation(`/${incomingSpecPath}`, '/config.json')
 
     // Upload the output results
-    await send(event, context, SUCCESS, null, event.LogicalResourceId)
+    await send(event, context, SUCCESS, null, 'DocsDeployCustomResource')
   } catch (err) {
     console.log('got to the error state even though I am about to call it successful')
     console.log(err)
-    await send(event, context, SUCCESS, null, event.LogicalResourceId)
+    await send(event, context, SUCCESS, null, 'DocsDeployCustomResource')
   }
 }
