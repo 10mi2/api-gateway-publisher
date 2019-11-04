@@ -4,6 +4,8 @@ import { Callback, Context, CloudFormationCustomResourceEvent } from "aws-lambda
 import { load_openapi_config, update_openapi_config } from './services/docs.service';
 import { S3Service } from './services/s3.service';
 import { CloudfrontService } from './services/cloudfront.service';
+import { APIGatewayService } from './services/apigateway.service';
+import { ResourceProperties } from 'services/openapi.service';
 
 const SITE_BUCKET = process.env.SITE_BUCKET
 
@@ -16,11 +18,24 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     const key = event.ResourceProperties.DefinitionKey
     const config = await load_openapi_config()
     const incomingSpecPath = `services/${key}.json`
+    const resourceProperties: ResourceProperties = event.ResourceProperties
 
     switch(event.RequestType) {
       case 'Create':
       case 'Update':
-        const incomingSpec = JSON.parse(event.ResourceProperties.DefinitionBody)
+        let incomingSpec
+
+        // Use the general sent value
+        if (resourceProperties.DefinitionBody !== undefined) {
+          incomingSpec = JSON.parse(event.ResourceProperties.DefinitionBody)
+        }
+        // Conditionally download the API Gateway export using the gatewayID
+        else if (resourceProperties.APIGatewayId !== undefined) {
+          incomingSpec = JSON.parse(await APIGatewayService.getExport(
+            resourceProperties.APIGatewayId,
+            resourceProperties.APIGatewayStage
+          ))
+        }
 
         // Add the key and upload the file
         S3Service.upload(SITE_BUCKET, incomingSpecPath, JSON.stringify(incomingSpec), 'application/json')
