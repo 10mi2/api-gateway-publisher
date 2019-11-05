@@ -45,7 +45,26 @@ The custom resource is self registering and accepts a push at build / update / d
         - admin@your_domain_name
 
 ## How to publish a service to your site
-See the examples, but generally you add a customResource that calls the created Lambda in this template.  You pass `DefinitionKey` and `DefinitionBody` to that custom resource and now you'll get updated docs every time you build your API Gateway Template.  This service will also remove the service docs when the API Gateway Template is deleted.
+
+## Publish by passing OpenAPI DefinitionBody
+See the examples, but generally you add a customResource that uploads your OpenAPI through the DefinitionBody Parameter.
+
+Required Parameters:
+    - DefinitionKey
+    - DefinitionBody
+
+This service will deploy the new OpenApi spec every time you update your service template and there are changes to your OpenAPI spec.  This will also delete the Service spec if / when you delete the template.
+
+## Publish using AWS API Gateway Export
+Alternatively, you can get an export of your API Gateway OpenAPI spec using the AWS integration at deploy time.
+
+Required Paramters:
+    - DefinitionKey
+    - APIGatewayId
+    - APIGatewayStage
+    <!-- TODO: Need to add incrementer or random value to ensure Docs runs each time for this -->
+
+The custom Resource will download the contents of the OpenAPI Spec without the AWS integration docs via the getExport functionality in API Gateway.  This will also update when the template is updated, and will delete when the service template is removed.
 
 # Other projects that helped to make this possible
 - [Open API / Swagger](https://github.com/swagger-api/swagger-ui)
