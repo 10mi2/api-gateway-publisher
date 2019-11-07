@@ -24,11 +24,18 @@ Resources:
         Variables:
           SITE_BUCKET: !Sub "docs.${Domain}"
           CLOUDFRONT_ID: !Ref Cloudfront
+          AWS_API_EXPORT_TYPE: oas30
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref SiteBucket
         - Statement:
           - Sid: CloudfrontInvalidationPolicy
+            Effect: Allow
+            Action:
+              - cloudfront:CreateInvalidation
+            Resource: "*"
+        - Statement:
+          - Sid: APIGatewayGetExportPolicy
             Effect: Allow
             Action:
               - cloudfront:CreateInvalidation

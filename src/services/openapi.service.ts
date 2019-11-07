@@ -1,11 +1,4 @@
 
-export interface ResourceProperties {
-  DefinitionKey: string
-  DefinitionBody?: string
-  APIGatewayId?: string
-  APIGatewayStage?: string
-}
-
 export function initializeSpec(api) {
   // Initialize Tags
   if (api.tags === undefined) {

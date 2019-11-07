@@ -5,7 +5,14 @@ import { load_openapi_config, update_openapi_config } from './services/docs.serv
 import { S3Service } from './services/s3.service';
 import { CloudfrontService } from './services/cloudfront.service';
 import { APIGatewayService } from './services/apigateway.service';
-import { ResourceProperties } from 'services/openapi.service';
+
+export interface ResourceProperties {
+  DefinitionKey: string
+  DefinitionBody?: string
+  APIGatewayId?: string
+  APIGatewayStage?: string
+  OpenAPIUrl?: string
+}
 
 const SITE_BUCKET = process.env.SITE_BUCKET
 
@@ -23,26 +30,33 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     switch(event.RequestType) {
       case 'Create':
       case 'Update':
-        let incomingSpec
-
-        // Use the general sent value
-        if (resourceProperties.DefinitionBody !== undefined) {
-          incomingSpec = JSON.parse(event.ResourceProperties.DefinitionBody)
+        // Handle case where specification is hosted elsewhere by providing a direct and accessible URL to it
+        if (resourceProperties.OpenAPIUrl !== undefined) {
+          config.urls.push({
+            name: key,
+            url: resourceProperties.OpenAPIUrl
+          })
+        } else {
+          let incomingSpec
+          // Use the general sent value
+          if (resourceProperties.DefinitionBody !== undefined) {
+            incomingSpec = JSON.parse(event.ResourceProperties.DefinitionBody)
+          }
+          // Conditionally download the API Gateway export using the gatewayID
+          else if (resourceProperties.APIGatewayId !== undefined) {
+            incomingSpec = JSON.parse(await APIGatewayService.getExport(
+              resourceProperties.APIGatewayId,
+              resourceProperties.APIGatewayStage
+            ))
+          }
+  
+          // Add the key and upload the file
+          S3Service.upload(SITE_BUCKET, incomingSpecPath, JSON.stringify(incomingSpec), 'application/json')
+          config.urls.push({
+            name: key,
+            url: incomingSpecPath
+          })
         }
-        // Conditionally download the API Gateway export using the gatewayID
-        else if (resourceProperties.APIGatewayId !== undefined) {
-          incomingSpec = JSON.parse(await APIGatewayService.getExport(
-            resourceProperties.APIGatewayId,
-            resourceProperties.APIGatewayStage
-          ))
-        }
-
-        // Add the key and upload the file
-        S3Service.upload(SITE_BUCKET, incomingSpecPath, JSON.stringify(incomingSpec), 'application/json')
-        config.urls.push({
-          name: key,
-          url: incomingSpecPath
-        })
 
         // Dedupe services in the config
         const serviceHash = {}

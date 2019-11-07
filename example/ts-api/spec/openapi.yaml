@@ -1,0 +1,40 @@
+openapi: 3.0.2
+info:
+  title: Typescript Example
+  description: Example Typescript Microservice API
+  contact:
+    email: info@tenmilesquare.com
+  version:
+    Fn::Sub: "${ApiVersion}"
+Servers:
+  
+tags:
+  - name: Home
+    description: The basic url usage
+paths:
+  /:
+    get:
+      tags:
+        - Home
+      summary: Get Test Object
+      description: Returns a simple object with json structure to show the inner workings
+      operationId: getTest
+      responses:
+        '200':
+          description: The basic return value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestObject'
+        '500':
+          description: Internal Server error
+components:
+  schemas:
+    TestObject:
+      type: object
+      properties:
+        message:
+          type: string
+        structure:
+          type: string
+          

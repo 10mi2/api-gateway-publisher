@@ -63,8 +63,14 @@ Required Paramters:
     - APIGatewayId
     - APIGatewayStage
     <!-- TODO: Need to add incrementer or random value to ensure Docs runs each time for this -->
+## Publish by hosting the OpenAPI Spec elsewhere and just pointing to it.
+Sometimes the OpenAPI spec is hosted with the api.  If this is the case for you, you can just add that url to the Swagger UI config through the custom resource.
 
-The custom Resource will download the contents of the OpenAPI Spec without the AWS integration docs via the getExport functionality in API Gateway.  This will also update when the template is updated, and will delete when the service template is removed.
+Required Parameters:
+    - DefinitionKey
+    - OpenAPIUrl
+
+The custom Resource will add that url to the Swagger UI config and make it accessible on the UI in the same dropdown as the other services.
 
 # Other projects that helped to make this possible
 - [Open API / Swagger](https://github.com/swagger-api/swagger-ui)
