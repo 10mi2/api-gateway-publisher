@@ -58,8 +58,8 @@ The custom resource is self registering and accepts a push at build / update / d
 See the examples, but generally you add a customResource that uploads your OpenAPI through the DefinitionBody Parameter.
 
 Required Parameters:
-    - DefinitionKey
-    - DefinitionBody
+- DefinitionKey
+- DefinitionBody
 
 This service will deploy the new OpenApi spec every time you update your service template and there are changes to your OpenAPI spec.  This will also delete the Service spec if / when you delete the template.
 
@@ -67,17 +67,17 @@ This service will deploy the new OpenApi spec every time you update your service
 Alternatively, you can get an export of your API Gateway OpenAPI spec using the AWS integration at deploy time.  Right now there is a race condition in the current examples `aws-ts-api` and `auth`.  Currently after a successful deployment, there is a command that runs to export the API from API Gateway.  This is what is used in the DocsDeployment Custom Resource function, but is not available until after the first complete deployment.  The hack way around this race condition for now is to deploy, then tick up the package.json version and deploy again.  I am open to suggestions here.
 
 Required Paramters:
-    - DefinitionKey
-    - APIVersion
-        - This is not used in the publishing, but is instead an incrementer to communicate that the underlying doc has changed.
-    - APIGatewayId
-    - APIGatewayStage
+- DefinitionKey
+- APIVersion
+    - This is not used in the publishing, but is instead an incrementer to communicate that the underlying doc has changed.
+- APIGatewayId
+- APIGatewayStage
 ## Publish by hosting the OpenAPI Spec elsewhere and just pointing to it.
 Sometimes the OpenAPI spec is hosted with the api.  If this is the case for you, you can just add that url to the Swagger UI config through the custom resource.
 
 Required Parameters:
-    - DefinitionKey
-    - OpenAPIUrl
+- DefinitionKey
+- OpenAPIUrl
 
 The custom Resource will add that url to the Swagger UI config and make it accessible on the UI in the same dropdown as the other services.
 
