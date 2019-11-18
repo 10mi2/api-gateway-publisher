@@ -15,7 +15,7 @@
     "deploy:documentation": "export REST_API_ID=`npm run --silent get:ApiId` && export VERSION=`npm run --silent version:view` && aws apigateway create-documentation-version --rest-api-id ${REST_API_ID} --documentation-version ${VERSION} --stage-name v1",
     "teardown": "source env.sh && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
     "build": "npm install; npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
-    "deploy": "source env.sh && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation ; npm run deploy:documentation",
+    "deploy": "source env.sh && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation; npm run deploy:documentation",
     "test": "aws cloudformation validate-template --template-body file://template.yaml"
   },
   "keywords": [

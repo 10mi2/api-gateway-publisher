@@ -88,6 +88,15 @@ Resources:
             Path: /echo/{id}
             RestApiId: !Ref ServiceApi
             Method: get
+  DocsDeployment:
+    Type: Custom::DeployDocumentation
+    Properties:
+      ServiceToken: !ImportValue DocsDeployFunctionArn
+      DefinitionKey: auth-apigateway
+      # this is here primarily to ensure we run when the version changes
+      APIVersion: !Ref ApiVersion
+      APIGatewayId: !Ref ServiceApi
+      APIGatewayStage: !Ref StageName
 Outputs:
   CognitoID:
     Description: The Cognito UserPool ID
