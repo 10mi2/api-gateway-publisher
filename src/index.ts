@@ -9,6 +9,7 @@ import { APIGatewayService } from './services/apigateway.service';
 export interface ResourceProperties {
   DefinitionKey: string
   DefinitionBody?: string
+  APIVersion?: string
   APIGatewayId?: string
   APIGatewayStage?: string
   OpenAPIUrl?: string
@@ -25,7 +26,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     const key = event.ResourceProperties.DefinitionKey
     const config = await load_openapi_config()
     const incomingSpecPath = `services/${key}.json`
-    const resourceProperties: ResourceProperties = event.ResourceProperties
+    const resourceProperties: ResourceProperties = event.ResourceProperties as any
 
     switch(event.RequestType) {
       case 'Create':
@@ -49,7 +50,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
               resourceProperties.APIGatewayStage
             ))
           }
-  
+
           // Add the key and upload the file
           S3Service.upload(SITE_BUCKET, incomingSpecPath, JSON.stringify(incomingSpec), 'application/json')
           config.urls.push({

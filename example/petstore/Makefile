@@ -8,7 +8,7 @@ test:
 deploy:
 	aws cloudformation deploy \
 		--no-fail-on-empty-changeset \
-		--template-file template.yaml \
+		--template-file cloudformation.yaml \
 		--stack-name $(STACK_NAME)
 
 .PHONY: teardown
