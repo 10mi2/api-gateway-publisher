@@ -5,11 +5,9 @@ Parameters:
   StageName:
     Type: String
     Default: v1
-  ApiVersion:
+  DefinitionBody:
     Type: String
-  PlumbingBucket:
-    Type: String
-    Default: openapi-plumbing
+    Default: "{}"
 
 Resources:
   # You don't actually need the API, but it does allow you to centralize your auth config, and allows you to add an Open API Spec
@@ -19,12 +17,6 @@ Resources:
     Properties:
       Name: OpenAPIGateway-Example
       StageName: !Ref StageName
-      DefinitionBody:
-        Fn::Transform:
-          Name: 'AWS::Include'
-          Parameters:
-            Location:
-              Fn::Sub: "s3://${PlumbingBucket}/${AWS::StackName}-openapi.yaml"
   HandlerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -40,6 +32,12 @@ Resources:
             Path: /
             RestApiId: !Ref ServiceApi
             Method: get
+  DocsDeployment:
+    Type: Custom::DeployDocumentation
+    Properties:
+      ServiceToken: !ImportValue DocsDeployFunctionArn
+      DefinitionKey: ts-api
+      DefinitionBody: !Ref DefinitionBody
 Outputs:
   GatewayEndpoint:
     Description: "API Prod stage endpoint"

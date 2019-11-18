@@ -4,10 +4,7 @@ info:
   description: Example Typescript Microservice API
   contact:
     email: info@tenmilesquare.com
-  version:
-    Fn::Sub: "${ApiVersion}"
-Servers:
-  
+  version: "${ApiVersion}"
 tags:
   - name: Home
     description: The basic url usage
@@ -37,4 +34,3 @@ components:
           type: string
         structure:
           type: string
-          
