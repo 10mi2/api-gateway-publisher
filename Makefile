@@ -48,7 +48,7 @@ upload:
 	aws cloudfront create-invalidation --distribution-id $(CLOUDFRONT_ID) --paths /*
 
 .PHONY: deploy
-deploy: build deploy_cloudformation upload
+deploy: deploy_cloudformation upload
 
 .PHONY: teardown
 teardown:
