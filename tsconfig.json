@@ -1,7 +1,7 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-      "outDir": "./dist",
+      "outDir": "./dist/src",
       "baseUrl": "src",
       "sourceMap": false,
       "declaration": false,
@@ -21,6 +21,6 @@
       ]
     },
     "exclude": [
-      "example/**/*"
+      "example/*"
     ]
   }
