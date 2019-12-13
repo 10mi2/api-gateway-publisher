@@ -51,4 +51,19 @@ export class APIGatewayService {
 
     }
 
+    /**
+     * AWS breaks some Swagger conventions so we need to fix that.
+     * @param spec The input Swagger Spec
+     */
+    static fixAwsNonsense(spec: any): any {
+        if (!!spec.servers) {
+            spec.servers.forEach(server => {
+                if (!!server.variables && !! server.variables.basePath && server.variables.basePath.default && server.variables.basePath.default.startsWith('/')) {
+                    server.variables.basePath.default = server.variables.basePath.default.substring(1)
+                }
+            })
+        }
+        return spec
+    }
+
 }

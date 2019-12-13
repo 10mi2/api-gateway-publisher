@@ -55,6 +55,9 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
               resourceProperties.APIGatewayId,
               resourceProperties.APIGatewayStage
             ))
+
+            // Clean the basePath Urls.
+            incomingSpec = APIGatewayService.fixAwsNonsense(incomingSpecPath)
           }
 
           // Add the key and upload the file
