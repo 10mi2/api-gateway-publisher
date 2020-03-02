@@ -1,6 +1,4 @@
-ifeq ($(PARENT_DOMAIN),)
-PARENT_DOMAIN=$(DOMAIN)
-endif
+# DOMAIN environment variable is required
 
 .PHONY: test
 test:
@@ -39,7 +37,7 @@ deploy_cloudformation:
 		--template-file template_deploy.yaml \
 		--stack-name $(STACK_NAME) \
 		--capabilities CAPABILITY_IAM \
-		--parameter-overrides "ParentDomain=$(PARENT_DOMAIN)" "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
+		--parameter-overrides "Domain=$(DOMAIN)" "HostedZoneId=$(HOSTED_ZONE_ID)"
 
 .PHONY: upload
 upload:
