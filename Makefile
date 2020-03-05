@@ -24,6 +24,7 @@ build: clean
 	npm run transpile
 	npm prune --production
 	cp -r node_modules dist/src/
+	npm i
 
 .PHONY: local
 local: build
