@@ -1,7 +1,12 @@
 # DOMAIN environment variable is required
+all: build test validate deploy
 
 .PHONY: test
 test:
+	npm run test
+
+.PHONY: validate
+validate:
 	aws cloudformation validate-template --template-body file://template.yaml
 
 .PHONY: clean
@@ -16,7 +21,7 @@ build: clean
 	mkdir -p dist/ui
 	cp ui/index.html dist/ui/index.html
 
-	tsc
+	npm run transpile
 	npm prune --production
 	cp -r node_modules dist/src/
 

@@ -6,6 +6,7 @@
   "main": "src/index.html",
   "scripts": {
     "start": "npm run build; http-server dist/",
+    "transpile": "tsc",
     "build": "make build",
     "deploy": "make deploy",
     "test": "jest"
