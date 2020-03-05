@@ -36,7 +36,7 @@ Resources:
           - Sid: APIGatewayGetExportPolicy
             Effect: Allow
             Action:
-              - cloudfront:CreateInvalidation
+              - apigateway:*
             Resource: "*"
 
   ## Specifying the bucket to upload assets for this location

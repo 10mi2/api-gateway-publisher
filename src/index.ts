@@ -45,10 +45,19 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
           }
           // Conditionally download the API Gateway export using the gatewayID
           else if (resourceProperties.APIGatewayId !== undefined) {
+            await APIGatewayService.createDocumentationVersion(
+              resourceProperties.APIGatewayId,
+              resourceProperties.APIVersion,
+              resourceProperties.APIGatewayStage
+            )
+
             incomingSpec = JSON.parse(await APIGatewayService.getExport(
               resourceProperties.APIGatewayId,
               resourceProperties.APIGatewayStage
             ))
+
+            // Clean the basePath Urls.
+            incomingSpec = APIGatewayService.fixAwsNonsense(incomingSpec)
           }
 
           // Add the key and upload the file

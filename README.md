@@ -1,5 +1,5 @@
 # API-Gateway-publisher
-Publish your API Gateway Microservice Swagger documentation to users who you don't want logging in to your aws console.  I would love suggestsions or other contributions.
+Publish your API Gateway Microservice Swagger documentation to users who you don't want logging in to your aws console.  I would love suggestions or other contributions.
 
 ## What is this tool for
 This creates an interactive documentation site to host the OpenAPI website at `docs.<your domain>`.

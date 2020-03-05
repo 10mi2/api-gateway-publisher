@@ -33,8 +33,8 @@ api: build
 	sam local start-api
 
 
-.PHONY: deploy_cloudformation
-deploy_cloudformation:
+.PHONY: deploy
+deploy:
 	@aws s3 cp ./openapi.yaml s3://$(STACK_BUCKET)/$(STACK_NAME)-openapi.yaml
 
 	@aws cloudformation package \
@@ -48,18 +48,6 @@ deploy_cloudformation:
 		--stack-name $(STACK_NAME) \
 		--parameter-overrides "PlumbingBucket=$(STACK_BUCKET)" \
 		--capabilities CAPABILITY_IAM
-
-.PHONY: publish_documentation
-publish_documentation:
-	# Publish a new version of the documentation for this api
-	@$(eval REST_API_ID=$(shell aws cloudformation describe-stack-resources --stack-name $(STACK_NAME) --logical-resource-id ServiceApi --query "StackResources[0].PhysicalResourceId" --output text))
-	@aws apigateway create-documentation-version \
-		--rest-api-id $(REST_API_ID) \
-		--documentation-version $(VERSION) \
-		--stage-name v1
-
-.PHONY: deploy
-deploy: build deploy_cloudformation publish_documentation
 
 .PHONY: teardown
 teardown: clean

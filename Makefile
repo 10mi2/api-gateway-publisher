@@ -18,7 +18,7 @@ build: clean
 
 	tsc
 	npm prune --production
-	cp -r node_modules dist/src
+	cp -r node_modules dist/src/
 
 .PHONY: local
 local: build

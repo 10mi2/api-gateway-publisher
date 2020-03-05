@@ -12,10 +12,9 @@
     "deploy:sam": "source env.sh && aws cloudformation package --template-file template.yaml --output-template template_deploy.yaml --s3-bucket ${STACK_BUCKET}",
     "deploy:spec": "source env.sh && aws s3 cp ./openapi.yaml s3://${STACK_BUCKET}/${STACK_NAME}-openapi.yaml",
     "deploy:cloudformation": "source env.sh && export VERSION=`npm run --silent version:view` && aws cloudformation deploy --no-fail-on-empty-changeset --template-file template_deploy.yaml --stack-name ${STACK_NAME} --parameter-overrides \"PlumbingBucket=${STACK_BUCKET}\" \"ApiVersion=${VERSION}\" --capabilities CAPABILITY_IAM",
-    "deploy:documentation": "export REST_API_ID=`npm run --silent get:ApiId` && export VERSION=`npm run --silent version:view` && aws apigateway create-documentation-version --rest-api-id ${REST_API_ID} --documentation-version ${VERSION} --stage-name v1",
     "teardown": "source env.sh && npm run clean && aws cloudformation delete-stack --stack-name ${STACK_NAME}",
     "build": "npm install; npm run build:compile; npm prune --production; cp -r node_modules dist/; npm install",
-    "deploy": "source env.sh && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation; npm run deploy:documentation",
+    "deploy": "source env.sh && npm run clean && npm run build && npm run deploy:spec && npm run deploy:sam && npm run deploy:cloudformation",
     "test": "aws cloudformation validate-template --template-body file://template.yaml"
   },
   "keywords": [
