@@ -38,6 +38,12 @@ Resources:
             Action:
               - apigateway:*
             Resource: "*"
+  # Log Group
+  DocsDeployFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${DocsDeployFunction}
+      RetentionInDays: 14
 
   ## Specifying the bucket to upload assets for this location
   SiteBucket:
