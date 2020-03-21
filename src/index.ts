@@ -28,9 +28,13 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     const incomingSpecPath = `services/${key}.json`
     const resourceProperties: ResourceProperties = event.ResourceProperties as any
 
+
+
     switch(event.RequestType) {
       case 'Create':
       case 'Update':
+        console.log("Create / Update")
+        console.log(resourceProperties)
         // Handle case where specification is hosted elsewhere by providing a direct and accessible URL to it
         if (resourceProperties.OpenAPIUrl !== undefined) {
           config.urls.push({
@@ -74,6 +78,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
         config.urls = Object.keys(serviceHash).map(s => serviceHash[s])
         break
       case 'Delete':
+        console.log
         await S3Service.delete(SITE_BUCKET, incomingSpecPath)
         const updatedUrls = config.urls.filter(url => url.name !== key)
         config.urls = updatedUrls
@@ -81,7 +86,7 @@ exports.handler = async (event: CloudFormationCustomResourceEvent, context: Cont
     }
 
     await update_openapi_config(config)
-    await CloudfrontService.createInvalidation(`/${incomingSpecPath}`, '/config.json')
+    await CloudfrontService.createInvalidation(`/${incomingSpecPath}`, '/config.json', '/index.html')
 
     // Upload the output results
     await send(event, context, SUCCESS, null, 'DocsDeployCustomResource')
